@@ -11,6 +11,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class ViewSubCat extends AppCompatActivity {
     ArrayList<String> arrayList;
@@ -32,6 +34,15 @@ public class ViewSubCat extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+        toolbar.setNavigationIcon(R.mipmap.ic_arrow_back_white_24dp);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                CM.finishActivity(ViewSubCat.this);
+
+            }
+        });
 
 
         intitView();
@@ -42,9 +53,11 @@ public class ViewSubCat extends AppCompatActivity {
         String page = getIntent().getStringExtra("page");
         setStory(page);
         RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.recycleView);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(ViewSubCat.this));
-        arrayList = new ArrayList<>();
-        mAdapter = new adapter(ViewSubCat.this, storyList);
+        // mRecyclerView.setLayoutManager(new LinearLayoutManager(ViewSubCat.this));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        List<String> wordList = Arrays.asList(storyList);
+
+        mAdapter = new adapter(this, wordList);
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.SetOnItemClickListener(new OnItemClickListener() {
             @Override
@@ -95,5 +108,11 @@ public class ViewSubCat extends AppCompatActivity {
 
         }
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        CM.finishActivity(this);
     }
 }

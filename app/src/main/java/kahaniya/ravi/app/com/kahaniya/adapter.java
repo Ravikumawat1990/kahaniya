@@ -7,9 +7,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Elixir on 08-Aug-2016.
@@ -17,11 +19,11 @@ import java.util.ArrayList;
 public class adapter extends RecyclerView.Adapter<adapter.MyViewHolder> {
 
 
-    private String[] dataSet;
+    private List<String> dataSet;
     Context context;
     public OnItemClickListener listener;
 
-    public adapter(Context context, String[] data) {
+    public adapter(Context context, List<String> data) {
         this.dataSet = data;
         this.context = context;
     }
@@ -30,24 +32,22 @@ public class adapter extends RecyclerView.Adapter<adapter.MyViewHolder> {
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private CardView rootView;
-        public TextView txtUserName;
-
+        public TextView name;
+        LinearLayout layout;
 
         public MyViewHolder(View itemView) {
             super(itemView);
-            rootView = (CardView) itemView.findViewById(R.id.rootView);
-            txtUserName = (TextView) itemView.findViewById(R.id.txtUserName);
-
-
+            name = (TextView) itemView.findViewById(R.id.txtUserName);
+            layout = (LinearLayout) itemView.findViewById(R.id.rootView);
+            layout.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View view) {
             switch (view.getId()) {
                 case R.id.rootView:
-                    listener.onItemClick("", dataSet[getAdapterPosition()]);
+                    listener.onItemClick("", dataSet.get(getAdapterPosition()));
                     break;
-
             }
 
         }
@@ -69,13 +69,15 @@ public class adapter extends RecyclerView.Adapter<adapter.MyViewHolder> {
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        TextView userName = holder.txtUserName;
-        userName.setText(dataSet[position]);
+        TextView name = holder.name;
+        name.setText(dataSet.get(position));
+
+
     }
 
     @Override
     public int getItemCount() {
-        return dataSet.length;
+        return dataSet.size();
     }
 
 
