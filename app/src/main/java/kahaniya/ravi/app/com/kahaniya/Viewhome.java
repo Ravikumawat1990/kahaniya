@@ -13,7 +13,10 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.reward.RewardItem;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
@@ -22,12 +25,10 @@ import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 public class Viewhome extends AppCompatActivity implements View.OnClickListener, RewardedVideoAdListener {
 
 
-    LinearLayout layout1, layout2, layout3, layout4, layout5, layout6, layout7, layout8, layout9, layout10;
-
-
-    private static final String AD_UNIT_ID = "ca-app-pub-3940256099942544/5224354917";
-    private static final String APP_ID = "ca-app-pub-3940256099942544~3347511713";
+    LinearLayout layout1, layout2, layout3, layout4, layout5, layout6, layout7, layout8, layout9, layout10, layout11, layout12, layout13, layout14, layout15, layoutLoadMore, layoutDiv;
     private RewardedVideoAd mRewardedVideoAd;
+    private AdView mAdView;
+    InterstitialAd interstitialAd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,20 +37,52 @@ public class Viewhome extends AppCompatActivity implements View.OnClickListener,
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
 
-                showRewardedVideo();
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+        //Full Screen on back
+        interstitialAd = new InterstitialAd(Viewhome.this);
+        interstitialAd.setAdUnitId(getResources().getString(R.string.interstitial_full_screen));
+        interstitialAd.loadAd(new AdRequest.Builder().build());
+
+
+        //Bottom
+        mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+        mAdView.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                // Toast.makeText(getApplicationContext(), "Ad is loaded!", Toast.LENGTH_SHORT).show();
+                mAdView.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAdClosed() {
+                mAdView.setVisibility(View.GONE);
+                //  Toast.makeText(getApplicationContext(), "Ad is closed!", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                mAdView.setVisibility(View.GONE);
+                //   Toast.makeText(getApplicationContext(), "Ad failed to load! error code: " + errorCode, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAdLeftApplication() {
+                mAdView.setVisibility(View.GONE);
+                //  Toast.makeText(getApplicationContext(), "Ad left application!", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAdOpened() {
+                mAdView.setVisibility(View.GONE);
+                //    Toast.makeText(getApplicationContext(), "Ad is opened!", Toast.LENGTH_SHORT).show();
             }
         });
 
 
-        // Initialize the Mobile Ads SDK.
-        MobileAds.initialize(this, APP_ID);
+        //video Adv
+        MobileAds.initialize(this, getString(R.string.AD_UNIT_ID));
         mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this);
         mRewardedVideoAd.setRewardedVideoAdListener(this);
         loadRewardedVideoAd();
@@ -59,7 +92,7 @@ public class Viewhome extends AppCompatActivity implements View.OnClickListener,
 
     private void loadRewardedVideoAd() {
         if (!mRewardedVideoAd.isLoaded()) {
-            mRewardedVideoAd.loadAd(AD_UNIT_ID, new AdRequest.Builder().build());
+            mRewardedVideoAd.loadAd(getString(R.string.AD_UNIT_ID), new AdRequest.Builder().build());
         }
     }
 
@@ -76,27 +109,16 @@ public class Viewhome extends AppCompatActivity implements View.OnClickListener,
         layout8 = (LinearLayout) findViewById(R.id.layout8);
         layout9 = (LinearLayout) findViewById(R.id.layout9);
         layout10 = (LinearLayout) findViewById(R.id.layout10);
+        layout11 = (LinearLayout) findViewById(R.id.layout11);
+        layout12 = (LinearLayout) findViewById(R.id.layout12);
+        layout13 = (LinearLayout) findViewById(R.id.layout13);
+        layout14 = (LinearLayout) findViewById(R.id.layout14);
+        layout15 = (LinearLayout) findViewById(R.id.layout15);
+        layoutDiv = (LinearLayout) findViewById(R.id.layoutSub);
+        layoutDiv.setVisibility(View.GONE);
+        layoutLoadMore = (LinearLayout) findViewById(R.id.layoutLoadMore);
 
 
-        if (CM.getSp(Viewhome.this, "isViewed", "").toString().equals("1")) {
-            //layout5.setVisibility(View.VISIBLE);
-            layout6.setVisibility(View.VISIBLE);
-            layout7.setVisibility(View.VISIBLE);
-            layout8.setVisibility(View.VISIBLE);
-            layout9.setVisibility(View.VISIBLE);
-            layout10.setVisibility(View.VISIBLE);
-
-        } else {
-
-            showPopup(this);
-            //layout5.setVisibility(View.GONE);
-            layout6.setVisibility(View.GONE);
-            layout7.setVisibility(View.GONE);
-            layout8.setVisibility(View.GONE);
-            layout9.setVisibility(View.GONE);
-            layout10.setVisibility(View.GONE);
-
-        }
         layout1.setOnClickListener(this);
         layout2.setOnClickListener(this);
         layout3.setOnClickListener(this);
@@ -107,9 +129,42 @@ public class Viewhome extends AppCompatActivity implements View.OnClickListener,
         layout8.setOnClickListener(this);
         layout9.setOnClickListener(this);
         layout10.setOnClickListener(this);
+        layout11.setOnClickListener(this);
+        layout12.setOnClickListener(this);
+        layout13.setOnClickListener(this);
+        layout14.setOnClickListener(this);
+        layout15.setOnClickListener(this);
+
+
+        layoutLoadMore.setOnClickListener(this);
 
 
     }
+
+    private void setVisibleGone() {
+        layout7.setVisibility(View.GONE);
+        layout8.setVisibility(View.GONE);
+        layout9.setVisibility(View.GONE);
+        layout10.setVisibility(View.GONE);
+        layout11.setVisibility(View.GONE);
+        layout12.setVisibility(View.GONE);
+        layout13.setVisibility(View.GONE);
+        layout14.setVisibility(View.GONE);
+        layout15.setVisibility(View.GONE);
+    }
+
+    private void setVisibleVisibile() {
+        layout7.setVisibility(View.VISIBLE);
+        layout8.setVisibility(View.VISIBLE);
+        layout9.setVisibility(View.VISIBLE);
+        layout10.setVisibility(View.VISIBLE);
+        layout11.setVisibility(View.VISIBLE);
+        layout12.setVisibility(View.VISIBLE);
+        layout13.setVisibility(View.VISIBLE);
+        layout14.setVisibility(View.VISIBLE);
+        layout15.setVisibility(View.VISIBLE);
+    }
+
 
     private void showRewardedVideo() {
         if (mRewardedVideoAd.isLoaded()) {
@@ -125,9 +180,7 @@ public class Viewhome extends AppCompatActivity implements View.OnClickListener,
 
     @Override
     public void onRewardedVideoAdClosed() {
-        // Toast.makeText(this, "onRewardedVideoAdClosed", Toast.LENGTH_SHORT).show();
 
-        // Preload the next video ad.
         loadRewardedVideoAd();
     }
 
@@ -152,13 +205,9 @@ public class Viewhome extends AppCompatActivity implements View.OnClickListener,
                 String.format(" onRewarded! currency: %s amount: %d", reward.getType(),
                         reward.getAmount()),
                 Toast.LENGTH_SHORT).show();
-        CM.setSp(Viewhome.this, "isViewed", "1");
-        layout5.setVisibility(View.VISIBLE);
-        layout6.setVisibility(View.VISIBLE);
-        layout7.setVisibility(View.VISIBLE);
-        layout8.setVisibility(View.VISIBLE);
-        layout9.setVisibility(View.VISIBLE);
-        layout10.setVisibility(View.VISIBLE);
+        layoutLoadMore.setVisibility(View.GONE);
+        layoutDiv.setVisibility(View.VISIBLE);
+
     }
 
     @Override
@@ -210,6 +259,33 @@ public class Viewhome extends AppCompatActivity implements View.OnClickListener,
                 intent.putExtra("page", "10");
                 CM.startActivity(intent, Viewhome.this);
                 break;
+            case R.id.layout11:
+                intent.putExtra("page", "11");
+                CM.startActivity(intent, Viewhome.this);
+                break;
+            case R.id.layout12:
+                intent.putExtra("page", "12");
+                CM.startActivity(intent, Viewhome.this);
+                break;
+            case R.id.layout13:
+                intent.putExtra("page", "13");
+                CM.startActivity(intent, Viewhome.this);
+                break;
+            case R.id.layout14:
+                intent.putExtra("page", "14");
+                CM.startActivity(intent, Viewhome.this);
+                break;
+            case R.id.layout15:
+                intent.putExtra("page", "15");
+                CM.startActivity(intent, Viewhome.this);
+                break;
+            case R.id.layoutLoadMore:
+                if (CM.isInternetAvailable(this)) {
+                    showRewardedVideo();
+                } else {
+                    CM.showToast(getString(R.string.checkinternet), this);
+                }
+                break;
 
         }
 
@@ -219,18 +295,28 @@ public class Viewhome extends AppCompatActivity implements View.OnClickListener,
     @Override
     public void onResume() {
         mRewardedVideoAd.resume(this);
+
+        if (mAdView != null) {
+            mAdView.resume();
+        }
         super.onResume();
     }
 
     @Override
     public void onPause() {
         mRewardedVideoAd.pause(this);
+        if (mAdView != null) {
+            mAdView.pause();
+        }
         super.onPause();
     }
 
     @Override
     public void onDestroy() {
         mRewardedVideoAd.destroy(this);
+        if (mAdView != null) {
+            mAdView.destroy();
+        }
         super.onDestroy();
     }
 
@@ -249,4 +335,12 @@ public class Viewhome extends AppCompatActivity implements View.OnClickListener,
         }).setIcon(R.mipmap.ic_launcher).show();
     }
 
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (interstitialAd.isLoaded()) {
+            interstitialAd.show();
+        }
+    }
 }

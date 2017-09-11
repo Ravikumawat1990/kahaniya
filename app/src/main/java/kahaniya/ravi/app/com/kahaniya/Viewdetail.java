@@ -31,6 +31,8 @@ public class Viewdetail extends AppCompatActivity {
             }
         });
         String data = getIntent().getStringExtra("page");
+        String[] result = data.split(",");
+        setTitle(result[0]);
         TextView textView = (TextView) findViewById(R.id.txt_khani);
         toolbar.setNavigationIcon(R.mipmap.ic_arrow_back_white_24dp);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {

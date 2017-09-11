@@ -70,7 +70,9 @@ public class adapter extends RecyclerView.Adapter<adapter.MyViewHolder> {
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         TextView name = holder.name;
-        name.setText(dataSet.get(position));
+
+        String[] result = dataSet.get(position).split(",");
+        name.setText(result[0]);
 
 
     }
